@@ -4,6 +4,7 @@ const app = express();
 //Mongoose & Bluebird
 const mongoose = require('mongoose');
 const bluebird = require('bluebird');
+const {createSignedSessionId, loginMiddleware, loggedInOnly, loggedOutOnly} = require('./services/Session');
 
 // ----------------------------------------
 // App Variables
@@ -83,9 +84,11 @@ app.use(morganToolkit());
 // ----------------------------------------
 // Routes
 // ----------------------------------------
-app.use('/', (req, res) => {
-  req.flash('Hi!');
-  res.render('welcome/index');
+const login = require('./routers/login');
+const secret = require('./routers/secrets');
+app.use('loginMiddleware');
+app.use("/", loggedInOnly, (req, res) => {
+  res.redirect("secrets");
 });
 
 // ----------------------------------------
