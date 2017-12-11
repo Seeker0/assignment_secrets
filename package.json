@@ -1,13 +1,18 @@
 {
   "name": "assignment_secrets",
   "version": "1.0.0",
-  "description": "Build a web app that allows users to store and share their darkest secrets.",
+  "description":
+    "Build a web app that allows users to store and share their darkest secrets.",
   "main": "app.js",
   "directories": {
     "lib": "lib"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed": "node seeds",
+    "seeds": "node seeds",
+    "console": "node repl.js",
+    "c": "node repl.js"
   },
   "repository": {
     "type": "git",

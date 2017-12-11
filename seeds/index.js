@@ -1,3 +1,4 @@
+'use strict';
 const mongoose = require('mongoose');
 const mongooseeder = require('mongooseeder');
 const models = require('../models');
@@ -11,18 +12,25 @@ mongooseeder.seed({
   clean: true,
   mongoose: mongoose,
   seeds: () => {
-    const users = [];
-    const posts = [];
-    const comments = [];
+    let users = [];
 
     for (let i = 0; i < 10; i++) {
       const user = new User({
-        userName: 'anon' + i,
-        password: 'Lastname' + i,
-        email: `${i}@nobodywrites.com`,
-        posts: []
+        email: `${i}@user${i}.com`,
+        passwordHash: `password${i}`,
+        secrets: []
       });
       users.push(user);
     }
+
+    const promises = [];
+    // const collections = [users, secrets];
+
+    users.forEach(model => {
+      const promise = model.save();
+      promises.push(promise);
+    });
+
+    return Promise.all(promises);
   }
 });
