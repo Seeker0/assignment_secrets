@@ -15,38 +15,48 @@ mongooseeder.seed({
   seeds: () => {
     let users = [];
 
+    let user;
     for (let i = 0; i < 10; i++) {
-      const user = new User({
+      user = new User({
         email: `${i}@user${i}.com`,
-        passwordHash: `password${i}`,
+        passwordHash: '',
         secrets: []
       });
+      user.set('password', `password${i}`);
       users.push(user);
     }
 
-
-
     let secrets = [];
-    for(let i = 0; i < 10; i++){
-      const secret = new Secret({
-        secret: faker.lorem.paragraph(),
-        author: users[i],
-        interestedUsers:users[i+1],
-        permittedUsers: users[i+2]
-      });
+    let secret;
+    for (let i = 0; i < 10; i++) {
+      if (i < 8) {
+        secret = new Secret({
+          secret: faker.lorem.paragraph(),
+          author: users[i],
+          interestedUsers: users[i + 1],
+          permittedUsers: users[i + 2]
+        });
+      } else {
+        secret = new Secret({
+          secret: faker.lorem.paragraph(),
+          author: users[i],
+          interestedUsers: users[i - 1],
+          permittedUsers: users[i - 2]
+        });
+      }
       secrets.push(secret);
+      users[i].secrets.push(secret._id);
     }
-
 
     const promises = [];
     const collections = [users, secrets];
 
-    collections.forEach(collection=>{
+    collections.forEach(collection => {
       collection.forEach(model => {
         const promise = model.save();
         promises.push(promise);
+      });
     });
-  });
 
     return Promise.all(promises);
   }
