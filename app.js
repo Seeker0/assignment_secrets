@@ -4,7 +4,12 @@ const app = express();
 //Mongoose & Bluebird
 const mongoose = require('mongoose');
 const bluebird = require('bluebird');
-const {createSignedSessionId, loginMiddleware, loggedInOnly, loggedOutOnly} = require('./services/Session');
+const {
+  createSignedSessionId,
+  loginMiddleware,
+  loggedInOnly,
+  loggedOutOnly
+} = require('./services/Session');
 
 // ----------------------------------------
 // App Variables
@@ -35,6 +40,12 @@ app.use(
     keys: [process.env.SESSION_SECRET || 'secret']
   })
 );
+
+// ----------------------------------------
+//Cookies-parser
+// ----------------------------------------
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 app.use((req, res, next) => {
   res.locals.session = req.session;
@@ -86,9 +97,11 @@ app.use(morganToolkit());
 // ----------------------------------------
 const login = require('./routers/login');
 const secret = require('./routers/secrets');
-app.use('loginMiddleware');
-app.use("/", loggedInOnly, (req, res) => {
-  res.redirect("secrets");
+
+app.use(loginMiddleware);
+app.use('/login', login);
+app.use('/', loggedInOnly, (req, res) => {
+  res.redirect('secrets');
 });
 
 // ----------------------------------------
